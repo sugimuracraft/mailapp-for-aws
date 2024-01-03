@@ -1,0 +1,11 @@
+version: '3'
+services:
+  front:
+    build:
+      context: ./
+      dockerfile: ./docker/angular/Dockerfile
+    command: sleep infinity
+    volumes:
+      - ./front:/code
+    ports:
+      - 14200:4200
