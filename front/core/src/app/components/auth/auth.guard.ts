@@ -1,7 +1,8 @@
 import {inject} from '@angular/core';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 /**
  * This guard will transition the user to the top screen if the user is not signed in.
@@ -12,7 +13,7 @@ export const authGuard = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!await authService.isSignedin()) {
+  if (!await firstValueFrom(authService.isSignedin$())) {
     return router.parseUrl('/');
   }
 

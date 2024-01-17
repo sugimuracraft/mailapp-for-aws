@@ -1,0 +1,11 @@
+<h2>Emails</h2>
+<table>
+    <ng-container *ngFor="let email of emails">
+        <tr [id]="email.messageId">
+            <td>{{ email.from }}</td>
+            <td>{{ email.subject }}</td>
+            <td>{{ email.receivedAt }}</td>
+        </tr>
+    </ng-container>
+</table>
+<app-signout></app-signout>

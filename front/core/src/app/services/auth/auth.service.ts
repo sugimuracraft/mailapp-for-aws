@@ -7,8 +7,8 @@ import {
   CognitoUserSession,
   ISignUpResult
 } from 'amazon-cognito-identity-js';
-import { Observable, Subject, firstValueFrom } from 'rxjs';
-import { environment } from '../environments/environment';
+import { Observable, Subject, of, switchMap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface NewPasswordRequiredArgs {
   userAttributes: any,
@@ -64,9 +64,8 @@ export class AuthService {
         observer.complete();
         return;
       }
-      this.cognitoUser.getSession((err: Error, session: null) => {
+      this.cognitoUser.getSession((err: Error | null, session: CognitoUserSession | null) => {
         if (err) {
-          observer.next(null);
           this.cognitoUser = null;
         }
         observer.next(this.cognitoUser);
@@ -75,12 +74,13 @@ export class AuthService {
     });
   }
 
-  async isSignedin(): Promise<boolean> {
-    const currentUser = await firstValueFrom(this.getCurrentUser$());
-    if (!currentUser) {
-      return false;
-    }
-    return true;
+  isSignedin$(): Observable<boolean> {
+    return this.getCurrentUser$().pipe(
+      switchMap((value: CognitoUser | null) => {
+        if (!value) return of(false);
+        return of(true);
+      })
+    );
   }
 
   signin(username: string, password: string): void {
