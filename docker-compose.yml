@@ -6,6 +6,6 @@ services:
       dockerfile: ./docker/angular/Dockerfile
     command: sleep infinity
     volumes:
-      - ./front:/code
+      - ./front/core:/code
     ports:
       - 14200:4200
