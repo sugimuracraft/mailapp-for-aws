@@ -148,6 +148,11 @@ const moveToUsers = async (message, destinations) => {
         );
         console.info(`delivered to ${destination}.`);
     }
+    console.log(JSON.stringify({
+        message: 'delete object from "borrowing"',
+        Bucket: message.receipt.action.bucketName,
+        Key: message.receipt.action.objectKey,
+    }));
     await s3Client.send(
         new DeleteObjectCommand({
             Bucket: message.receipt.action.bucketName,

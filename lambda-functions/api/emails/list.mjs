@@ -24,10 +24,14 @@ export const handler = async (event) => {
         ExpressionAttributeValues: {
             ':user': user,
         },
+        Limit: 50,
         ConsistentRead: false,
-    }
-    if ('esk' in event.params.querystring) {
-        params['ExclusiveStartKey'] = event.params.querystring.esk;
+    };
+    if ('k' in event.params.querystring) {
+        params['ExclusiveStartKey'] = {
+            user: user,
+            receivedAt: event.params.querystring.k,
+        };
     }
     return await docClient.send(new QueryCommand(params));
 };
