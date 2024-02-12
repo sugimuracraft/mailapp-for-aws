@@ -52,6 +52,11 @@ const deleteEmail = async (email) => {
             Key: `${USERS_PREFIX}${email.user}/${email.status}/${email.messageId}`,
         })
     );
+    return {
+        email: email,
+        Bucket: BUCKET_NAME,
+        Key: `${USERS_PREFIX}${email.user}/${email.status}/${email.messageId}`,
+    };
 };
 
 export const handler = async (event) => {
@@ -64,6 +69,6 @@ export const handler = async (event) => {
         console.info();
         throw new Error(`Unknown messageId. email.user (${email.user}) !== user (${user})`);
     }
-    deleteEmail(email);
-    return {};
+    const res = deleteEmail(email);
+    return res;
 };
