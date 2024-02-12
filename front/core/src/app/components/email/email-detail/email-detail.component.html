@@ -1,0 +1,8 @@
+<div *ngIf="email">
+  <div class="subject">{{ email!.subject }}</div>
+  <div class="header">
+    <div class="from">{{ email!.from }}</div>
+    <div class="received-at">{{ email!.receivedAt | date:'YYYY.MM.dd hh:mm' }}</div>
+  </div>
+  <pre class="body" *ngIf="email!.body">{{ email!.body }}</pre>
+</div>

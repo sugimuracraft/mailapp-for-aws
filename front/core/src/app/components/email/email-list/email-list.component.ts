@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Email, EmailService } from '../../../services/email/email.service';
 import { SignoutComponent } from "../../auth/signout/signout.component";
@@ -19,6 +20,7 @@ export class EmailListComponent {
 
   constructor(
     private emailService: EmailService,
+    private router: Router,
   ) {
     this.emails = [];
     this.stored = false;
@@ -35,5 +37,9 @@ export class EmailListComponent {
 
   listNext(): void {
     this.emailService.listNext$().subscribe(this.handleList.bind(this));
+  }
+
+  toDetail(messageId: string): void {
+    this.router.navigate([`/emails/${messageId}`]);
   }
 }

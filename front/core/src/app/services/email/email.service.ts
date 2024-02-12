@@ -99,23 +99,11 @@ export class EmailService {
     );
   }
 
-  /*retrieve$(messageId: string): Observable<Email> {
-    return this.http.get<EmailDetailResponse>(`${environment.api.url}/emails/${messageId}/`).pipe(
-      switchMap((value: EmailDetailResponse) => {
-        this.count = value.Count;
-        if (!value.LastEvaluatedKey) {
-          this.hasNext = false;
-          this.lastEvaluatedKey = null;
-        }
-        else {
-          this.hasNext = true;
-          this.lastEvaluatedKey = value.LastEvaluatedKey;
-        }
-        this.items = value.Items.sort(orderByReceivedAtDesc);
-        this.stored = true;
-        this.totalCount = value.ScannedCount;
-        return of(this.items);
+  retrieve$(messageId: string): Observable<Email> {
+    return this.http.get<Email>(`${environment.api.url}/emails/${messageId}/`).pipe(
+      switchMap((value: Email) => {
+        return of(value);
       })
     );
-  }*/
+  }
 }
