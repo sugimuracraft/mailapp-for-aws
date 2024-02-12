@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import PostalMime from 'postal-mime';
 
@@ -18,6 +18,7 @@ export class EmailDetailComponent {
 
   constructor(
     private emailService: EmailService,
+    private location: Location,
   ) {
     this.email = null;
     this.parsedBody = null;
@@ -34,5 +35,14 @@ export class EmailDetailComponent {
       const parser = new PostalMime();
       this.parsedBody = await parser.parse(this.email.body);
     }
+  }
+
+  delete(): void {
+    if (!this.email) {
+      return;
+    }
+    this.emailService.delete(this.email.messageId).subscribe(() => {
+      this.location.back();
+    });
   }
 }

@@ -100,10 +100,10 @@ export class EmailService {
   }
 
   retrieve$(messageId: string): Observable<Email> {
-    return this.http.get<Email>(`${environment.api.url}/emails/${messageId}/`).pipe(
-      switchMap((value: Email) => {
-        return of(value);
-      })
-    );
+    return this.http.get<Email>(`${environment.api.url}/emails/${messageId}/`);
+  }
+
+  delete(messageId: string): Observable<any> {
+    return this.http.delete<any>(`${environment.api.url}/emails/${messageId}/`);
   }
 }
