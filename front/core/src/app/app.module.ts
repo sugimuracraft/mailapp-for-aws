@@ -4,11 +4,11 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SigninComponent } from './auth/signin/signin.component';
-import { SignupComponent } from './auth/signup/signup.component';
-import { NewPasswordComponent } from './auth/new-password/new-password.component';
-import { EmailListComponent } from './email/email-list/email-list.component';
-import { SignoutComponent } from './auth/signout/signout.component';
+import { SigninComponent } from './components/auth/signin/signin.component';
+import { SignupComponent } from './components/auth/signup/signup.component';
+import { NewPasswordComponent } from './components/auth/new-password/new-password.component';
+import { EmailListComponent } from './components/email/email-list/email-list.component';
+import { SignoutComponent } from './components/auth/signout/signout.component';
 
 @NgModule({
   declarations: [
@@ -17,12 +17,12 @@ import { SignoutComponent } from './auth/signout/signout.component';
     SignupComponent,
     NewPasswordComponent,
     EmailListComponent,
-    SignoutComponent
+    SignoutComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,5 +1,19 @@
 # Description
 
+# Development env with docker
+
+```sh
+docker compose build
+docker compose up -d
+```
+
+connect running container `front-1`.
+
+## install npm packages
+The working directory is `/code` in the container, mapped from the project root `front/core`.
+
+```
+
 # Setup
 
 ## install @angular/cli

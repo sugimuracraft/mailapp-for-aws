@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CognitoUser, CognitoUserSession } from 'amazon-cognito-identity-js';
 
-import { AuthService, NewPasswordRequiredArgs } from '../../auth.service';
+import { AuthService, NewPasswordRequiredArgs } from '../../../services/auth/auth.service';
 
 
 @Component({
@@ -31,10 +31,12 @@ export class SigninComponent implements OnInit {
     authService.onNewPasswordRequired$.subscribe(this.handleNewPasswordRequired.bind(this));
   }
 
-  async ngOnInit(): Promise<void> {
-    if (await this.authService.isSignedin()) {
-      this.router.navigate(['/emails']);
-    }
+  ngOnInit(): void {
+    this.authService.isSignedin$().subscribe((value) => {
+      if (value) {
+        this.router.navigate(['/emails']);
+      }
+    });
   }
 
   onSubmit() {
