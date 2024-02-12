@@ -1,16 +1,20 @@
-import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CognitoUserSession } from 'amazon-cognito-identity-js';
 
 import { AuthService } from '../../../services/auth/auth.service';
 
+
 @Component({
-  selector: 'app-new-password',
-  templateUrl: './new-password.component.html',
-  styleUrl: './new-password.component.scss'
+  selector: 'app-renew-password',
+  standalone: true,
+  imports: [ CommonModule, ReactiveFormsModule ],
+  templateUrl: './renew-password.component.html',
+  styleUrl: './renew-password.component.scss'
 })
-export class NewPasswordComponent {
+export class RenewPasswordComponent {
   errorMessage: string;
   form: FormGroup;
 

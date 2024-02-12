@@ -1,10 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+
 import { Email, EmailService } from '../../../services/email/email.service';
+import { SignoutComponent } from "../../auth/signout/signout.component";
+
 
 @Component({
-  selector: 'app-email-list',
-  templateUrl: './email-list.component.html',
-  styleUrl: './email-list.component.scss'
+    selector: 'app-email-list',
+    standalone: true,
+    imports: [ CommonModule, SignoutComponent ],
+    templateUrl: './email-list.component.html',
+    styleUrl: './email-list.component.scss'
 })
 export class EmailListComponent {
   protected emails: Email[];
