@@ -4,5 +4,5 @@
     <div class="from">{{ email!.from }}</div>
     <div class="received-at">{{ email!.receivedAt | date:'YYYY.MM.dd hh:mm' }}</div>
   </div>
-  <pre class="body" *ngIf="email!.body">{{ email!.body }}</pre>
+  <pre class="body">{{ parsedBody.text }}</pre>
 </div>

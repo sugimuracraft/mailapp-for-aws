@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import PostalMime from 'postal-mime';
 
 import { Email, EmailService } from '../../../services/email/email.service';
 
@@ -13,11 +14,13 @@ import { Email, EmailService } from '../../../services/email/email.service';
 })
 export class EmailDetailComponent {
   protected email: Email | null;
+  protected parsedBody: any;
 
   constructor(
     private emailService: EmailService,
   ) {
     this.email = null;
+    this.parsedBody = null;
   }
 
   @Input()
@@ -25,7 +28,11 @@ export class EmailDetailComponent {
     this.emailService.retrieve$(messageId).subscribe(this.handleRetrieveEmail.bind(this));
   }
 
-  handleRetrieveEmail = (email: Email) => {
+  handleRetrieveEmail = async (email: Email) => {
     this.email = email;
+    if (this.email.body) {
+      const parser = new PostalMime();
+      this.parsedBody = await parser.parse(this.email.body);
+    }
   }
 }
