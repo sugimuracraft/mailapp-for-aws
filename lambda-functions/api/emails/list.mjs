@@ -25,6 +25,7 @@ export const handler = async (event) => {
             ':user': user,
         },
         Limit: 50,
+        ScanIndexForward: false,  // 降順で取得（新しいものから）
         ConsistentRead: false,
     };
     if ('k' in event.params.querystring) {

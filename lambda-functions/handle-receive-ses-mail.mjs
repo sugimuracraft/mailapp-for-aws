@@ -8,28 +8,17 @@ import {
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
-const s3Client = new S3Client({region: 'us-west-2'});
+const s3Client = new S3Client({region: process.env['S3_REGION']});
 const dynamodbClient = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(dynamodbClient);
 
-const MY_DOMAIN_NAME = 'saintsouth.net';
-const USERNAME_DELIMITER = '+';
+const mailDomainName = process.env['MAIL_DOMAIN_NAME'];
+const mailDomainNameSuffix = `@${mailDomainName}`;
+const usernameDelimiter = process.env['USERNAME_DELIMITER'];
 const TRUSH_PREFIX = 'trash/';
 const USERS_PREFIX = 'users/';
 
-const TABLE_NAME = 'mailbox';
-
-export const handler = async (event, context) => {
-    for (const record of event.Records) {
-        await processMessageAsync(record);
-    }
-
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify('done'),
-    };
-    return response;
-};
+const tableName = process.env['DYNAMODB_TABLE_NAME'];
 
 const processMessageAsync = async (record) => {
     // see: https://docs.aws.amazon.com/ja_jp/ses/latest/dg/receiving-email-notifications-contents.html
@@ -46,7 +35,7 @@ const processMessageAsync = async (record) => {
     // destinations check.
     const destinations = filterDestinations(message.mail.destination);
     if (destinations.length <= 0) {
-        console.info(`destinations are not include own domain ${MY_DOMAIN_NAME}".`);
+        console.info(`destinations are not include own domain ${mailDomainName}".`);
         await moveToTrash(message);
         return await Promise.resolve(record);
     }
@@ -69,7 +58,7 @@ const processMessageAsync = async (record) => {
 
 const filterDestinations = (destinations) => {
     return destinations.filter((v) => {
-        return v.endsWith(`@${MY_DOMAIN_NAME}`);
+        return v.endsWith(mailDomainNameSuffix);
     });
 };
 
@@ -123,8 +112,8 @@ const moveToTrash = async (message) => {
 
 const moveToUsers = async (message, destinations) => {
     for (const destination of destinations) {
-        let user = destination.replace(`@${MY_DOMAIN_NAME}`, ''); // remove domain part.
-        user = user.split(USERNAME_DELIMITER)[0]; // remove alias.
+        let user = destination.replace(mailDomainNameSuffix, ''); // remove domain part.
+        user = user.split(usernameDelimiter)[0]; // remove alias.
         const defaultDir = 'new';
         await s3Client.send(
             new CopyObjectCommand({
@@ -135,7 +124,7 @@ const moveToUsers = async (message, destinations) => {
         );
         await docClient.send(
             new PutCommand({
-                TableName: TABLE_NAME,
+                TableName: tableName,
                 Item: {
                     'user': user,
                     'receivedAt': message.mail.timestamp,
@@ -159,4 +148,15 @@ const moveToUsers = async (message, destinations) => {
             Key: message.receipt.action.objectKey,
         })
     );
+};
+
+export const handler = async (event, context) => {
+    const promises = event.Records.map(record => processMessageAsync(record));
+    await Promise.all(promises);
+
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify('done'),
+    };
+    return response;
 };
