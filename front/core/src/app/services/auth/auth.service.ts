@@ -5,7 +5,7 @@ import {
   CognitoUser,
   CognitoUserPool,
   CognitoUserSession,
-  ISignUpResult
+  ISignUpResult,
 } from 'amazon-cognito-identity-js';
 import { Observable, Subject, of, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -57,7 +57,7 @@ export class AuthService {
     });
   }
 
-  getCurrentUser$(): Observable<CognitoUser | null> {
+  getCurrentUser$(): Observable<CognitoUserSession | null> {
     return new Observable((observer) => {
       if (!this.cognitoUser) {
         observer.next(null);
@@ -68,7 +68,7 @@ export class AuthService {
         if (err) {
           this.cognitoUser = null;
         }
-        observer.next(this.cognitoUser);
+        observer.next(session);
         observer.complete();
       });
     });
@@ -76,7 +76,7 @@ export class AuthService {
 
   isSignedin$(): Observable<boolean> {
     return this.getCurrentUser$().pipe(
-      switchMap((value: CognitoUser | null) => {
+      switchMap((value: CognitoUserSession | null) => {
         if (!value) return of(false);
         return of(true);
       })

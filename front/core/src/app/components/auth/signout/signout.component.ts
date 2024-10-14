@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../services/auth/auth.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-signout',
+  standalone: true,
+  imports: [ ReactiveFormsModule ],
   templateUrl: './signout.component.html',
   styleUrl: './signout.component.scss'
 })

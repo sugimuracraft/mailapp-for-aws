@@ -19,12 +19,12 @@ The working directory is `/code` in the container, mapped from the project root 
 ## install @angular/cli
 ```bash
 npm install @angular/cli
-# -> 17.0.8
 ```
 
 ## generate app
 ```bash
-./node_modules/.bin/ng new core --no-standalone --routing true --style scss --ssr false
+ng new core --no-standalone --routing true --style scss --ssr false
+ng new core --style scss --ssr false
 
 ? Would you like to share pseudonymous usage data about this project with the Angular Team
 at Google under Google's Privacy Policy at https://policies.google.com/privacy. For more

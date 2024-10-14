@@ -1,15 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CognitoUser, CognitoUserSession } from 'amazon-cognito-identity-js';
+import { CognitoUserSession } from 'amazon-cognito-identity-js';
 
 import { AuthService, NewPasswordRequiredArgs } from '../../../services/auth/auth.service';
 
 
 @Component({
   selector: 'app-signin',
+  standalone: true,
+  imports: [ CommonModule, ReactiveFormsModule ],
   templateUrl: './signin.component.html',
-  styleUrl: './signin.component.scss',
+  styleUrl: './signin.component.scss'
 })
 export class SigninComponent implements OnInit {
   errorMessage: string;
