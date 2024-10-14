@@ -41,7 +41,7 @@ export class EmailDetailComponent {
     if (!this.email) {
       return;
     }
-    this.emailService.delete(this.email.messageId).subscribe(() => {
+    this.emailService.delete$(this.email.messageId).subscribe(() => {
       this.location.back();
     });
   }
