@@ -105,5 +105,9 @@ export const handler = async (event) => {
         await moveToRead(email);
     }
     email["body"] = body;
-    return email;
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify(email),
+    };
+    return response;
 };

@@ -55,7 +55,8 @@ export class EmailService {
 
   list$(): Observable<Email[]> {
     return this.http.get<EmailListResponse>(`${environment.api.url}/emails/`).pipe(
-      switchMap((value: EmailListResponse) => {
+      switchMap((responseData: any) => {
+        const value: EmailListResponse = JSON.parse(responseData.body);
         this.count = value.Count;
         if (!value.LastEvaluatedKey) {
           this.hasNext = false;
@@ -83,7 +84,8 @@ export class EmailService {
         params: new HttpParams().append('k', this.lastEvaluatedKey["receivedAt"]),
       },
     ).pipe(
-      switchMap((value: EmailListResponse) => {
+      switchMap((responseData: any) => {
+        const value: EmailListResponse = JSON.parse(responseData.body);
         this.count += value.Count;
         if (!value.LastEvaluatedKey) {
           this.hasNext = false;
@@ -100,10 +102,24 @@ export class EmailService {
   }
 
   retrieve$(messageId: string): Observable<Email> {
-    return this.http.get<Email>(`${environment.api.url}/emails/${messageId}/`);
+    return this.http.get<Email>(
+      `${environment.api.url}/emails/${messageId}/`
+    ).pipe(
+      switchMap((responseData: any) => {
+        const value: Email = JSON.parse(responseData.body);
+        return of(value);
+      })
+    );
   }
 
   delete$(messageId: string): Observable<any> {
-    return this.http.delete<any>(`${environment.api.url}/emails/${messageId}/`);
+    return this.http.delete<any>(
+      `${environment.api.url}/emails/${messageId}/`
+    ).pipe(
+      switchMap((responseData: any) => {
+        const value: any = JSON.parse(responseData.body);
+        return of(value);
+      })
+    );
   }
 }
