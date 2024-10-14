@@ -103,7 +103,7 @@ export class EmailService {
     return this.http.get<Email>(`${environment.api.url}/emails/${messageId}/`);
   }
 
-  delete(messageId: string): Observable<any> {
+  delete$(messageId: string): Observable<any> {
     return this.http.delete<any>(`${environment.api.url}/emails/${messageId}/`);
   }
 }
