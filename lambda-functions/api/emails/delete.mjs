@@ -72,6 +72,10 @@ export const handler = async (event) => {
         console.info();
         throw new Error(`Unknown messageId. email.user (${email.user}) !== user (${user})`);
     }
-    const res = deleteEmail(email);
-    return res;
+    const data = deleteEmail(email);
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify(data),
+    };
+    return response;
 };

@@ -7,4 +7,7 @@ export const environment = {
     api: {
         url: 'https://api.example.com',
     },
+    userdata: {
+        url: '',
+    },
 };

@@ -33,5 +33,10 @@ export const handler = async (event) => {
             receivedAt: event.params.querystring.k,
         };
     }
-    return await docClient.send(new QueryCommand(params));
+    const data = await docClient.send(new QueryCommand(params));
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify(data),
+    };
+    return response;
 };
