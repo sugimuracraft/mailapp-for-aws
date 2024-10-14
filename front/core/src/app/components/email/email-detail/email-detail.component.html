@@ -5,5 +5,7 @@
     <div class="received-at">{{ email!.receivedAt | date:'YYYY.MM.dd hh:mm' }}</div>
     <div><button (click)="delete()">Delete</button></div>
   </div>
-  <pre class="body">{{ parsedBody.text }}</pre>
+  <div *ngIf="parsedBody.html" [innerHTML]="parsedBody.html"></div>
+  <pre class="body" *ngIf="!parsedBody.html && parsedBody.text">{{ parsedBody.text }}</pre>
+  <div *ngIf="!parsedBody.html && !parsedBody.text">Can't Display Message.</div>
 </div>
