@@ -9,22 +9,23 @@ import {
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { QueryCommand, UpdateCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
-const s3Client = new S3Client({region: 'us-west-2'});
+const s3Client = new S3Client({region: process.env['S3_REGION']});
 const dynamodbClient = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(dynamodbClient);
 
-const MY_DOMAIN_NAME = 'saintsouth.net';
+const mailDomainName = process.env['MAIL_DOMAIN_NAME'];
+const mailDomainNameSuffix = `@${mailDomainName}`;
 
-const BUCKET_NAME = "mailbox.saintsouth.net";
+const bucketName = process.env['S3_BUCKET_NAME'];
 const USERS_PREFIX = 'users/';
 const NEW_DIR = 'new';
 const READ_DIR = 'read';
-const TABLE_NAME = 'mailbox';
+const tableName = process.env['DYNAMODB_TABLE_NAME'];
 
 const retrieveEmail = async (messageId) => {
     const response = await docClient.send(
         new QueryCommand({
-            TableName: TABLE_NAME,
+            TableName: tableName,
             IndexName: 'messageId-index',
             KeyConditionExpression: '#messageId = :messageId',
             ExpressionAttributeNames: {
@@ -43,7 +44,7 @@ const retrieveEmail = async (messageId) => {
 const readEmailBody = async (email) => {
     const response = await s3Client.send(
         new GetObjectCommand({
-            Bucket: BUCKET_NAME,
+            Bucket: bucketName,
             Key: `${USERS_PREFIX}${email.user}/${email.status}/${email.messageId}`,
         })
     );
@@ -54,7 +55,7 @@ const readEmailBody = async (email) => {
 const updateStatus = async (email) => {
     const response = await docClient.send(
         new UpdateCommand({
-            TableName: TABLE_NAME,
+            TableName: tableName,
             Key: {
                 user: email.user,
                 receivedAt: email.receivedAt,
@@ -75,24 +76,24 @@ const updateStatus = async (email) => {
 const moveToRead = async (email) => {
     await s3Client.send(
         new CopyObjectCommand({
-            CopySource: `/${BUCKET_NAME}/${USERS_PREFIX}${email.user}/${NEW_DIR}/${email.messageId}`,
-            Bucket: BUCKET_NAME,
+            CopySource: `/${bucketName}/${USERS_PREFIX}${email.user}/${NEW_DIR}/${email.messageId}`,
+            Bucket: bucketName,
             Key: `${USERS_PREFIX}${email.user}/${email.status}/${email.messageId}`,
         })
     );
     await s3Client.send(
         new DeleteObjectCommand({
-            Bucket: BUCKET_NAME,
+            Bucket: bucketName,
             Key: `${USERS_PREFIX}${email.user}/${NEW_DIR}/${email.messageId}`,
         })
     );
 };
 
 export const handler = async (event) => {
-    if (!event.context.email.endsWith(`@${MY_DOMAIN_NAME}`)) {
+    if (!event.context.email.endsWith(mailDomainNameSuffix)) {
         throw new Error(`Unknown domain\'s mail. (email: ${event.context.email})`);
     }
-    const user = event.context.email.replace(`@${MY_DOMAIN_NAME}`, '');
+    const user = event.context.email.replace(mailDomainNameSuffix, '');
     let email = await retrieveEmail(event.params.path.messageId);
     if (email.user !== user) {
         console.info();

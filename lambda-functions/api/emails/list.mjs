@@ -6,17 +6,17 @@ import { QueryCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 const dynamodbClient = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(dynamodbClient);
 
-const MY_DOMAIN_NAME = 'saintsouth.net';
-
-const TABLE_NAME = 'mailbox';
+const mailDomainName = process.env["MAIL_DOMAIN_NAME"]
+const mailDomainNameSuffix = `@${mailDomainName}`;
+const tableName = process.env["DYNAMODB_TABLE_NAME"];
 
 export const handler = async (event) => {
-    if (!event.context.email.endsWith(`@${MY_DOMAIN_NAME}`)) {
+    if (!event.context.email.endsWith(mailDomainNameSuffix)) {
         throw new Error('Unknown domain\'s mail.');
     }
-    const user = event.context.email.replace(`@${MY_DOMAIN_NAME}`, '');
+    const user = event.context.email.replace(mailDomainNameSuffix, '');
     const params = {
-        TableName: TABLE_NAME,
+        TableName: tableName,
         KeyConditionExpression: '#user = :user',
         ExpressionAttributeNames: {
             '#user': 'user',
