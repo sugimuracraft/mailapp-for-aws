@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 export interface Email {
   user: string,
   receivedAt: string,
-  status: string,
+  status: string,  // 'new', 'read'
   messageId: string,
   from?: string,
   subject?: string,
