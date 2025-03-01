@@ -5,11 +5,10 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
-  selector: 'app-signout',
-  standalone: true,
-  imports: [ ReactiveFormsModule ],
-  templateUrl: './signout.component.html',
-  styleUrl: './signout.component.scss'
+    selector: 'app-signout',
+    imports: [ReactiveFormsModule],
+    templateUrl: './signout.component.html',
+    styleUrl: './signout.component.scss'
 })
 export class SignoutComponent {
   form: FormGroup;

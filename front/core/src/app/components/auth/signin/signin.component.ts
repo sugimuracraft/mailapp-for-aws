@@ -8,11 +8,10 @@ import { AuthService, NewPasswordRequiredArgs } from '../../../services/auth/aut
 
 
 @Component({
-  selector: 'app-signin',
-  standalone: true,
-  imports: [ CommonModule, ReactiveFormsModule ],
-  templateUrl: './signin.component.html',
-  styleUrl: './signin.component.scss'
+    selector: 'app-signin',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './signin.component.html',
+    styleUrl: './signin.component.scss'
 })
 export class SigninComponent implements OnInit {
   errorMessage: string;
