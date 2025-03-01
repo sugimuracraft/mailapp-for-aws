@@ -1,34 +1,24 @@
 <h2>Emails</h2>
 <div>{{ message }}</div>
 <div>
-  <input
-    type="checkbox"
-    [checked]="areAllChecked()"
-    (change)="toggleAllCheckboxes($event)"
-  />
+  <input type="checkbox" [checked]="areAllChecked()" (change)="toggleAllCheckboxes($event)" />
   <label for="action-select">一括操作</label>
   <select id="action-select" [(ngModel)]="selectedAction" (change)="handleActionChanged($event)">
-    <option *ngFor="let action of actions" [value]="action.value">{{action.label}}</option>
+    <option *ngFor="let action of actions" [value]="action.value">{{ action.label }}</option>
   </select>
   <button (click)="handleBulkAction($event)" [disabled]="!isChecked() || this.bulkRequesting">実行</button>
 </div>
 <table #checkboxTable>
   <ng-container *ngFor="let email of emails">
-    <tr [id]="email.messageId" [ngClass]="{'status': true, 'new': email.status === 'new'}">
+    <tr [id]="email.messageId" [ngClass]="{ status: true, new: email.status === 'new' }">
       <td>
-        <input
-          type="checkbox"
-          [checked]="emailState[email.messageId]"
-          (change)="toggleCheckbox(email, $event)"
-        />
+        <input type="checkbox" [checked]="emailState[email.messageId]" (change)="toggleCheckbox(email, $event)" />
       </td>
       <td>{{ email.from }}</td>
       <td (click)="toDetail(email.messageId)">{{ email.subject }}</td>
-      <td>{{ email.receivedAt | date:'YYYY.MM.dd hh:mm' }}</td>
+      <td>{{ email.receivedAt | date: 'YYYY.MM.dd hh:mm' }}</td>
     </tr>
   </ng-container>
 </table>
-<button *ngIf="hasNext" (click)="listNext()">
-  Get Next
-</button>
+<button *ngIf="hasNext" (click)="listNext()">Get Next</button>
 <app-signout></app-signout>

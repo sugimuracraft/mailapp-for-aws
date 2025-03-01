@@ -4,12 +4,11 @@ import PostalMime from 'postal-mime';
 
 import { Email, EmailService } from '../../../services/email/email.service';
 
-
 @Component({
-    selector: 'app-email-detail',
-    imports: [CommonModule],
-    templateUrl: './email-detail.component.html',
-    styleUrl: './email-detail.component.scss'
+  selector: 'app-email-detail',
+  imports: [CommonModule],
+  templateUrl: './email-detail.component.html',
+  styleUrl: './email-detail.component.scss',
 })
 export class EmailDetailComponent {
   protected email: Email | null;
@@ -34,7 +33,7 @@ export class EmailDetailComponent {
       const parser = new PostalMime();
       this.parsedBody = await parser.parse(this.email.body);
     }
-  }
+  };
 
   delete(): void {
     if (!this.email) {

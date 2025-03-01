@@ -1,4 +1,5 @@
 # Run Angular
+
 ```sh
 ng serve --host 0.0.0.0
 ```
@@ -14,12 +15,15 @@ ncu
 ```
 
 ## update versions
+
 this step update `package.json` only, not update packages yet.
+
 ```bash
 ncu -u
 ```
 
 ## update packages
+
 ```bash
 npm install --legacy-peer-deps
 ```

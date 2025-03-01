@@ -6,7 +6,6 @@ import { EmailListComponent } from './components/email/email-list/email-list.com
 import { authGuard } from './guards/auth/auth.guard';
 import { EmailDetailComponent } from './components/email/email-detail/email-detail.component';
 
-
 export const routes: Routes = [
   {
     path: '',
@@ -19,7 +18,7 @@ export const routes: Routes = [
   {
     path: 'emails',
     component: EmailListComponent,
-    canActivate: [ authGuard ],
+    canActivate: [authGuard],
     //children: [
     //  {
     //    path: ':id',
@@ -30,6 +29,6 @@ export const routes: Routes = [
   {
     path: 'emails/:id',
     component: EmailDetailComponent,
-    canActivate: [ authGuard ],
+    canActivate: [authGuard],
   },
 ];

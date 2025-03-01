@@ -1,11 +1,11 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <label for="username">ユーザー名</label>
-    <input id="username" type="text" formControlName="username">
-  
-    <label for="password">パスワード</label>
-    <input id="password" type="password" formControlName="password">
+  <label for="username">ユーザー名</label>
+  <input id="username" type="text" formControlName="username" />
 
-    <p *ngIf="errorMessage">{{ errorMessage }}</p>
-  
-    <button type="submit">サインイン</button>
+  <label for="password">パスワード</label>
+  <input id="password" type="password" formControlName="password" />
+
+  <p *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <button type="submit">サインイン</button>
 </form>
