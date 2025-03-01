@@ -6,11 +6,10 @@ import { Email, EmailService } from '../../../services/email/email.service';
 
 
 @Component({
-  standalone: true,
-  selector: 'app-email-detail',
-  imports: [ CommonModule ],
-  templateUrl: './email-detail.component.html',
-  styleUrl: './email-detail.component.scss',
+    selector: 'app-email-detail',
+    imports: [CommonModule],
+    templateUrl: './email-detail.component.html',
+    styleUrl: './email-detail.component.scss'
 })
 export class EmailDetailComponent {
   protected email: Email | null;

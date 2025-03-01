@@ -8,11 +8,10 @@ import { AuthService } from '../../../services/auth/auth.service';
 
 
 @Component({
-  selector: 'app-renew-password',
-  standalone: true,
-  imports: [ CommonModule, ReactiveFormsModule ],
-  templateUrl: './renew-password.component.html',
-  styleUrl: './renew-password.component.scss'
+    selector: 'app-renew-password',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './renew-password.component.html',
+    styleUrl: './renew-password.component.scss'
 })
 export class RenewPasswordComponent {
   errorMessage: string;

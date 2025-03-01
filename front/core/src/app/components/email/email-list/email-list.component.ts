@@ -10,10 +10,9 @@ import { forkJoin } from 'rxjs'
 
 @Component({
     selector: 'app-email-list',
-    standalone: true,
-    imports: [ CommonModule, FormsModule, SignoutComponent ],
+    imports: [CommonModule, FormsModule, SignoutComponent],
     templateUrl: './email-list.component.html',
-    styleUrl: './email-list.component.scss',
+    styleUrl: './email-list.component.scss'
 })
 export class EmailListComponent {
   @ViewChild('checkboxTable', { static: true }) checkboxTable!: ElementRef
