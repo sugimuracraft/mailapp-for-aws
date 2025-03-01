@@ -6,12 +6,11 @@ import { CognitoUserSession } from 'amazon-cognito-identity-js';
 
 import { AuthService, NewPasswordRequiredArgs } from '../../../services/auth/auth.service';
 
-
 @Component({
-    selector: 'app-signin',
-    imports: [CommonModule, ReactiveFormsModule],
-    templateUrl: './signin.component.html',
-    styleUrl: './signin.component.scss'
+  selector: 'app-signin',
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './signin.component.html',
+  styleUrl: './signin.component.scss',
 })
 export class SigninComponent implements OnInit {
   errorMessage: string;

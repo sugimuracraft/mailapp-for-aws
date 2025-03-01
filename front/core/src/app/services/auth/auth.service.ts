@@ -11,12 +11,12 @@ import { Observable, Subject, of, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface NewPasswordRequiredArgs {
-  userAttributes: any,
-  requiredAttributes: any,
+  userAttributes: any;
+  requiredAttributes: any;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   public onError$: Subject<Error>;
@@ -42,16 +42,14 @@ export class AuthService {
   }
 
   signUp$(username: string, password: string, email: string): Observable<ISignUpResult> {
-    const attributeList = [
-      new CognitoUserAttribute({ Name: 'email', Value: email })
-    ];
+    const attributeList = [new CognitoUserAttribute({ Name: 'email', Value: email })];
     return new Observable((observer) => {
       this.userPool.signUp(username, password, attributeList, [], (err?: Error, result?: ISignUpResult) => {
         if (err) {
           observer.error(err);
           return;
         }
-        observer.next(result);
+        if (result) observer.next(result);
         observer.complete();
       });
     });
@@ -79,19 +77,19 @@ export class AuthService {
       switchMap((value: CognitoUserSession | null) => {
         if (!value) return of(false);
         return of(true);
-      })
+      }),
     );
   }
 
   signin(username: string, password: string): void {
     const authenticationDetails = new AuthenticationDetails({
       Username: username,
-      Password: password
+      Password: password,
     });
 
     this.cognitoUser = new CognitoUser({
       Username: username,
-      Pool: this.userPool
+      Pool: this.userPool,
     });
 
     this.cognitoUser.authenticateUser(authenticationDetails, {
@@ -134,7 +132,7 @@ export class AuthService {
       },
       onFailure: (err) => {
         this.onError$.next(err);
-      }
+      },
     });
   }
 

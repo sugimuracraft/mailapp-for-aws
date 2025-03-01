@@ -6,12 +6,11 @@ import { CognitoUserSession } from 'amazon-cognito-identity-js';
 
 import { AuthService } from '../../../services/auth/auth.service';
 
-
 @Component({
-    selector: 'app-renew-password',
-    imports: [CommonModule, ReactiveFormsModule],
-    templateUrl: './renew-password.component.html',
-    styleUrl: './renew-password.component.scss'
+  selector: 'app-renew-password',
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './renew-password.component.html',
+  styleUrl: './renew-password.component.scss',
 })
 export class RenewPasswordComponent {
   errorMessage: string;
@@ -35,7 +34,7 @@ export class RenewPasswordComponent {
   onSubmit() {
     const formData = this.form.value;
     if (formData.password !== formData.passwordConfirm) {
-      this.errorMessage = 'password does not match.'
+      this.errorMessage = 'password does not match.';
       return;
     }
     this.authService.newPassword(formData.password);

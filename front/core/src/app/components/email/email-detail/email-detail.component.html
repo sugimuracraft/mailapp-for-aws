@@ -2,7 +2,7 @@
   <div class="subject">{{ email!.subject }}</div>
   <div class="header">
     <div class="from">{{ email!.from }}</div>
-    <div class="received-at">{{ email!.receivedAt | date:'YYYY.MM.dd hh:mm' }}</div>
+    <div class="received-at">{{ email!.receivedAt | date: 'YYYY.MM.dd hh:mm' }}</div>
     <div><button (click)="delete()">Delete</button></div>
   </div>
   <div *ngIf="parsedBody.html" [innerHTML]="parsedBody.html"></div>
