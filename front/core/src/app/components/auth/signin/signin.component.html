@@ -1,11 +1,22 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <label for="username">ユーザー名</label>
-  <input id="username" type="text" formControlName="username" />
+<mat-card appearance="outlined">
+  <mat-card-title>
+    <h2>サインイン</h2>
+  </mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>ユーザー名</mat-label>
+        <input matInput formControlName="username" />
+      </mat-form-field>
 
-  <label for="password">パスワード</label>
-  <input id="password" type="password" formControlName="password" />
+      <mat-form-field appearance="outline">
+        <mat-label>パスワード</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
 
-  <p *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p *ngIf="errorMessage">{{ errorMessage }}</p>
 
-  <button type="submit">サインイン</button>
-</form>
+      <button mat-raised-button color="primary" type="submit">サインイン</button>
+    </form>
+  </mat-card-content>
+</mat-card>
