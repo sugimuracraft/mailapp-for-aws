@@ -36,7 +36,7 @@ const orderByReceivedAtDesc = (a: Email, b: Email) => {
 export class EmailService {
   public count: number;
   public hasNext: boolean;
-  public items: Email[]; // stored items.
+  public items: Email[] | null; // stored items.
   public lastEvaluatedKey: { [param: string]: string } | null; // if not all items have been retrieved, this value is set.
   public stored: boolean; // whether items retrieve from api or not.
   public totalCount: number;
@@ -44,13 +44,16 @@ export class EmailService {
   constructor(private http: HttpClient) {
     this.count = 0;
     this.hasNext = false;
-    this.items = [];
+    this.items = null;
     this.lastEvaluatedKey = null;
     this.stored = false;
     this.totalCount = 0;
   }
 
   list$(): Observable<Email[]> {
+    if (this.items) {
+      return of(this.items);
+    }
     return this.http.get<EmailListResponse>(`${environment.api.url}/emails/`).pipe(
       switchMap((responseData: any) => {
         const value: EmailListResponse = JSON.parse(responseData.body);
@@ -71,6 +74,9 @@ export class EmailService {
   }
 
   listNext$(): Observable<Email[]> {
+    if (!this.items) {
+      return of([]);
+    }
     if (!this.lastEvaluatedKey) {
       return of(this.items);
     }
@@ -88,6 +94,9 @@ export class EmailService {
           } else {
             this.hasNext = true;
             this.lastEvaluatedKey = value.LastEvaluatedKey;
+          }
+          if (!this.items) {
+            this.items = [];
           }
           this.items = this.items.concat(value.Items.sort(orderByReceivedAtDesc));
           return of(this.items);
