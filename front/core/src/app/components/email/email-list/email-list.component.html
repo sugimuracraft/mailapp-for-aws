@@ -1,24 +1,39 @@
-<h2>Emails</h2>
-<div>{{ message }}</div>
+<h2 matHeaderTitle>Emails</h2>
 <div>
-  <input type="checkbox" [checked]="areAllChecked()" (change)="toggleAllCheckboxes($event)" />
-  <label for="action-select">一括操作</label>
-  <select id="action-select" [(ngModel)]="selectedAction" (change)="handleActionChanged($event)">
-    <option *ngFor="let action of actions" [value]="action.value">{{ action.label }}</option>
-  </select>
-  <button (click)="handleBulkAction($event)" [disabled]="!isChecked() || this.bulkRequesting">実行</button>
+  <mat-form-field appearance="fill">
+    <mat-select [(ngModel)]="selectedAction" (selectionChange)="handleActionChanged($event)">
+      <mat-option *ngFor="let action of actions" [value]="action.value">{{ action.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button (click)="handleBulkAction($event)" [disabled]="!isChecked() || this.bulkRequesting">実行</button>
 </div>
-<table #checkboxTable>
-  <ng-container *ngFor="let email of emails">
-    <tr [id]="email.messageId" [ngClass]="{ status: true, new: email.status === 'new' }">
-      <td>
-        <input type="checkbox" [checked]="emailState[email.messageId]" (change)="toggleCheckbox(email, $event)" />
-      </td>
-      <td>{{ email.from }}</td>
-      <td (click)="toDetail(email.messageId)">{{ email.subject }}</td>
-      <td>{{ email.receivedAt | date: 'YYYY.MM.dd hh:mm' }}</td>
-    </tr>
+<table mat-table #checkboxTable [dataSource]="emails">
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox [checked]="areAllChecked()" (change)="toggleAllCheckboxes($event)" ></mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let email">
+      <mat-checkbox [checked]="email.checked" (change)="toggleCheckbox(email, $event)" ></mat-checkbox>
+    </td>
   </ng-container>
+
+  <ng-container matColumnDef="from">
+    <th mat-header-cell *matHeaderCellDef>送信者</th>
+    <td mat-cell *matCellDef="let email" [ngClass]="{ status: true, new: email.status === 'new' }">{{ email.from }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="subject">
+    <th mat-header-cell *matHeaderCellDef>件名</th>
+    <td mat-cell *matCellDef="let email" [ngClass]="{ status: true, new: email.status === 'new' }" (click)="toDetail(email.messageId)">{{ email.subject }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="receivedAt">
+    <th mat-header-cell *matHeaderCellDef>受信日時</th>
+    <td mat-cell *matCellDef="let email" [ngClass]="{ status: true, new: email.status === 'new' }">{{ email.receivedAt | date: 'YYYY.MM.dd hh:mm' }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
-<button *ngIf="hasNext" (click)="listNext()">Get Next</button>
+<button mat-raised-button *ngIf="hasNext" (click)="listNext()">次のページを取得</button>
 <app-signout></app-signout>

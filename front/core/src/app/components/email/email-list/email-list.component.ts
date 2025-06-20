@@ -1,37 +1,55 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
 
 import { Email, EmailService } from '../../../services/email/email.service';
 import { SignoutComponent } from '../../auth/signout/signout.component';
 import { forkJoin } from 'rxjs';
 
+interface EmailWithCheckState extends Email {
+  checked: boolean;
+}
+
 @Component({
   selector: 'app-email-list',
-  imports: [CommonModule, FormsModule, SignoutComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SignoutComponent,
+    MatCheckboxModule,
+    MatTableModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './email-list.component.html',
   styleUrl: './email-list.component.scss',
 })
-export class EmailListComponent {
+export class EmailListComponent implements OnInit {
   @ViewChild('checkboxTable', { static: true }) checkboxTable!: ElementRef;
 
-  protected message: string;
-  protected emails: Email[];
-  protected emailState: Record<string, boolean>;
+  protected snackbar: MatSnackBar;
+  protected snackbarRef: MatSnackBarRef<TextOnlySnackBar> | null;
+  protected emails: EmailWithCheckState[];
   protected stored: boolean;
   protected hasNext: boolean;
   protected actions: any[];
   protected selectedAction: string;
   protected bulkRequesting: boolean;
+  protected displayedColumns: string[];
 
   constructor(
     private emailService: EmailService,
     private router: Router,
   ) {
-    this.message = 'Request emails...';
+    this.snackbar = inject(MatSnackBar);
+    this.snackbarRef = null;
     this.emails = [];
-    this.emailState = {};
     this.stored = false;
     this.hasNext = false;
     this.actions = [
@@ -40,42 +58,50 @@ export class EmailListComponent {
     ];
     this.selectedAction = 'bulkRead';
     this.bulkRequesting = false;
+    this.displayedColumns = ['select', 'from', 'subject', 'receivedAt'];
+  }
 
+  ngOnInit(): void {
+    this.snackbarRef = this.snackbar.open('Request emails...');
     this.emailService.list$().subscribe(this.handleList.bind(this));
   }
 
   private handleList(emails: Email[]): void {
-    this.message = emails.length <= 0 ? 'No message.' : '';
-    this.emails = emails;
-    this.emails.forEach((email) => {
-      this.emailState[email.messageId] = this.emailState[email.messageId] || false;
+    if (this.snackbarRef) {
+      this.snackbarRef.dismiss();
+    }
+    if (emails.length <= 0) {
+      this.snackbar.open('No message.', 'OK', {'duration': 3000});
+    }
+    this.emails = emails.map((email) => {
+      return {...email, checked: false}
     });
     this.stored = this.emailService.stored;
     this.hasNext = this.emailService.hasNext;
   }
 
-  protected toggleCheckbox(email: Email, $event: any): void {
-    this.emailState[email.messageId] = $event.target.checked;
+  protected toggleCheckbox(email: EmailWithCheckState, $event: any): void {
+    console.log("check toggleCheckbox");
+    console.log($event);
+    email.checked = $event.checked;
   }
 
   protected toggleAllCheckboxes($event: any): void {
-    for (const messageId in this.emailState) {
-      this.emailState[messageId] = $event.target.checked;
-    }
+    this.emails = this.emails.map((email) => {
+      return {...email, checked: $event.checked};
+    });
   }
 
   protected areAllChecked(): boolean {
-    return this.emails.every((email) => this.emailState[email.messageId]);
+    return this.emails.every((email) => email.checked);
   }
 
   protected isChecked(): boolean {
-    return Object.values(this.emailState).some((value) => value);
+    return this.emails.some((email) => email.checked);
   }
 
   private getCheckedMessageIds(): string[] {
-    return Object.entries(this.emailState)
-      .filter(([_, checked]) => checked) // 値が true のものをフィルタリング
-      .map(([messageId, _]) => messageId); // キー (messageId) を取得
+    return this.emails.filter((email) => email.checked).map((email) => email.messageId);
   }
 
   protected handleActionChanged($event: any) {
@@ -99,7 +125,7 @@ export class EmailListComponent {
   }
 
   private bulkRead(): void {
-    this.message = 'Reading emails...';
+    this.snackbarRef = this.snackbar.open('Reading emails...');
     const checkedMessageIds = this.getCheckedMessageIds();
     const readRequests = checkedMessageIds.map((messageId) => this.emailService.retrieve$(messageId));
     forkJoin(readRequests).subscribe(() => {
@@ -109,27 +135,29 @@ export class EmailListComponent {
           email.status = 'read';
         }
       });
-      this.message = 'Read completed.';
+      if (this.snackbarRef) {
+        this.snackbarRef.dismiss();
+      }
+      this.snackbar.open('Read completed.', 'OK', {duration: 3000});
     });
   }
 
   private bulkDelete(): void {
-    this.message = 'Deleting emails...';
+    this.snackbarRef = this.snackbar.open('Deleting emails...');
     const checkedMessageIds = this.getCheckedMessageIds();
     const deleteRequests = checkedMessageIds.map((messageId) => this.emailService.delete$(messageId));
     forkJoin(deleteRequests).subscribe(() => {
       // delete from emails.
       this.emails = this.emails.filter((email) => !checkedMessageIds.includes(email.messageId));
-      // delete from emailState.
-      checkedMessageIds.forEach((messageId) => {
-        delete this.emailState[messageId];
-      });
-      this.message = 'Delete completed.';
+      if (this.snackbarRef) {
+        this.snackbarRef.dismiss();
+      }
+      this.snackbar.open('Delete completed.', 'OK', {duration: 3000});
     });
   }
 
   protected listNext(): void {
-    this.message = 'Request emails...';
+    this.snackbarRef = this.snackbar.open('Request emails...');
     this.emailService.listNext$().subscribe(this.handleList.bind(this));
   }
 
